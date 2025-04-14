@@ -1,0 +1,102 @@
+syntax="proto3";
+
+import "google/api/annotations.proto";
+
+package intr.v1;
+option go_package = "intr.v1;intrv1";
+
+service Generator {
+  // 生成单条短链
+  rpc GenerateURL(URLRequest) returns (URLResponse) {
+    option(google.api.http)  = {
+      post: "/v1/generator/code",
+      body:"*",
+    };
+  };
+  // 批量生成短链
+  rpc BatchGenerateURL(BatchURLRequest) returns (BatchURLResponse) {
+    option(google.api.http) = {
+      post: "/v1/generator/batch/code",
+      body:"*",
+    };
+  };
+  // 修改单条短链
+  rpc UpdateURL(URLRequest) returns (URLResponse);
+  // 删除单条短链
+  rpc DeleteURL(DelRequest) returns (DelResponse);
+}
+
+message Metadata {
+  // 原始的URL
+  string original_url = 1;
+  // 生成短链的有效期，单位：7天/15天/30天
+  int64 expiration = 2;
+  // 自定义短码，可选
+  optional string custom_code = 3;
+}
+
+message URLRequest {
+  // 所属业务
+  string biz = 1;
+  // 核心元数据
+  Metadata meta = 2;
+  // 创建者表示
+  string creator = 3;
+}
+
+message URLResponse {
+    URLResponseContent resp = 1;
+    int64 status_code = 2;
+    string message = 3;
+}
+
+message URLResponseContent {
+  // 原始的URL
+  string original_url = 1;
+  // 生成的短码
+  string short_code = 2;
+  // 过期时间
+  int64 expire_at = 3;
+}
+
+message BatchURLRequest {
+  // 所属业务
+  string biz = 1;
+  // 批量生成短链的原始URL元数据列表
+  repeated Metadata meta = 2;
+  // 创建者表示
+  string creator = 3;
+}
+
+message BatchURLResponse {
+  repeated URLResponseContent resp = 1;
+  int64 status_code = 2;
+  string message = 3;
+}
+
+message UpdateURLRequest {
+  // 所属业务
+  string biz = 1;
+  // URL所属ID
+  int64 id = 2;
+  // 核心元数据
+  Metadata meta = 3;
+  // 创建者表示
+  string creator = 4;
+}
+
+message DelRequest {
+  // 所属业务
+  string biz = 1;
+  // ID
+  int64 id = 2;
+  // URL信息
+  string url = 3;
+}
+
+message DelResponse {
+  // 状态码
+  int64 code = 1;
+  // 消息
+  string message = 2;
+}
