@@ -22,3 +22,5 @@ const (
 	// ThirtyDays 30天
 	ThirtyDays = 30
 )
+
+const Topic = "generator_topic"

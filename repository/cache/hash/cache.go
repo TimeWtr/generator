@@ -18,7 +18,7 @@ import (
 	_ "embed"
 	"errors"
 
-	"github.com/TimeWtr/shortlink-platform/generator/repository/cache"
+	"github.com/TimeWtr/generator/repository/cache"
 
 	"github.com/redis/go-redis/v9"
 	"golang.org/x/net/context"
@@ -37,8 +37,33 @@ type CacheHash struct {
 	client redis.Cmdable
 }
 
-func NewCacheHash(client redis.Cmdable) cache.CInter {
+func NewCacheHash(client redis.Cmdable) cache.Cacher {
 	return &CacheHash{client: client}
+}
+
+func (c *CacheHash) Reserve(ctx context.Context, key string) error {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (c *CacheHash) Add(ctx context.Context, key string, data any) error {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (c *CacheHash) MAdd(ctx context.Context, key string, data []any) error {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (c *CacheHash) Exists(ctx context.Context, key string) (bool, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (c *CacheHash) MExists(ctx context.Context, key string, data []any) (map[string]bool, error) {
+	//TODO implement me
+	panic("implement me")
 }
 
 func (c *CacheHash) Count(ctx context.Context) (int64, error) {
