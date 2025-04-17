@@ -15,6 +15,7 @@
 package domain
 
 type URLResponse struct {
+	ID        int64
 	OriginURL string
 	ShortCode string
 	ExpireAt  int64

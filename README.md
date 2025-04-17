@@ -77,9 +77,10 @@ sequenceDiagram
                 Instance ->> Instance: Base62计算，获取新的短码
                 Instance ->> Instance: 本地缓存
                 alt 本批次达到1000条短码
+                    Instance ->> DB: 更新最新的递增ID到数据库[并发安全] 必须先写库，以库为准
                     note right of Instance: Pipeline写入/Lua脚本写入
                     Instance ->> Pool[Redis List]: 批量写入预生成短码到短码池，并更新总数[并发安全]
-                    Instance ->> DB: 更新最新的递增ID到数据库[并发安全]
+                    Pool[Redis List] -->> Instance: 返回写入结果
                 end
             end
         end

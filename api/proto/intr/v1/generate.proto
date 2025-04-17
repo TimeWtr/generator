@@ -1,25 +1,13 @@
 syntax="proto3";
 
-import "google/api/annotations.proto";
-
 package intr.v1;
 option go_package = "intr.v1;intrv1";
 
 service Generator {
   // 生成单条短链
-  rpc GenerateURL(URLRequest) returns (URLResponse) {
-    option(google.api.http)  = {
-      post: "/v1/generator/code",
-      body:"*",
-    };
-  };
+  rpc GenerateURL(URLRequest) returns (URLResponse) {};
   // 批量生成短链
-  rpc BatchGenerateURL(BatchURLRequest) returns (BatchURLResponse) {
-    option(google.api.http) = {
-      post: "/v1/generator/batch/code",
-      body:"*",
-    };
-  };
+  rpc BatchGenerateURL(BatchURLRequest) returns (BatchURLResponse) {};
   // 修改单条短链
   rpc UpdateURL(URLRequest) returns (URLResponse);
   // 删除单条短链
@@ -33,6 +21,8 @@ message Metadata {
   int64 expiration = 2;
   // 自定义短码，可选
   optional string custom_code = 3;
+  // 备注
+  string comment = 4;
 }
 
 message URLRequest {

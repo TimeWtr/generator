@@ -7,13 +7,11 @@
 package intrv1
 
 import (
+	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
+	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
-
-	_ "google.golang.org/genproto/googleapis/api/annotations"
-	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 )
 
 const (
@@ -27,10 +25,12 @@ type Metadata struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// 原始的URL
 	OriginalUrl string `protobuf:"bytes,1,opt,name=original_url,json=originalUrl,proto3" json:"original_url,omitempty"`
-	// 生成短链的有效期，单位为秒
+	// 生成短链的有效期，单位：7天/15天/30天
 	Expiration int64 `protobuf:"varint,2,opt,name=expiration,proto3" json:"expiration,omitempty"`
 	// 自定义短码，可选
-	CustomCode    *string `protobuf:"bytes,3,opt,name=custom_code,json=customCode,proto3,oneof" json:"custom_code,omitempty"`
+	CustomCode *string `protobuf:"bytes,3,opt,name=custom_code,json=customCode,proto3,oneof" json:"custom_code,omitempty"`
+	// 备注
+	Comment       string `protobuf:"bytes,4,opt,name=comment,proto3" json:"comment,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -82,6 +82,13 @@ func (x *Metadata) GetExpiration() int64 {
 func (x *Metadata) GetCustomCode() string {
 	if x != nil && x.CustomCode != nil {
 		return *x.CustomCode
+	}
+	return ""
+}
+
+func (x *Metadata) GetComment() string {
+	if x != nil {
+		return x.Comment
 	}
 	return ""
 }
@@ -588,14 +595,15 @@ var File_generate_proto protoreflect.FileDescriptor
 
 const file_generate_proto_rawDesc = "" +
 	"\n" +
-	"\x0egenerate.proto\x12\aintr.v1\x1a\x1cgoogle/api/annotations.proto\"\x83\x01\n" +
+	"\x0egenerate.proto\x12\aintr.v1\"\x9d\x01\n" +
 	"\bMetadata\x12!\n" +
 	"\foriginal_url\x18\x01 \x01(\tR\voriginalUrl\x12\x1e\n" +
 	"\n" +
 	"expiration\x18\x02 \x01(\x03R\n" +
 	"expiration\x12$\n" +
 	"\vcustom_code\x18\x03 \x01(\tH\x00R\n" +
-	"customCode\x88\x01\x01B\x0e\n" +
+	"customCode\x88\x01\x01\x12\x18\n" +
+	"\acomment\x18\x04 \x01(\tR\acommentB\x0e\n" +
 	"\f_custom_code\"_\n" +
 	"\n" +
 	"URLRequest\x12\x10\n" +
@@ -633,10 +641,10 @@ const file_generate_proto_rawDesc = "" +
 	"\x03url\x18\x03 \x01(\tR\x03url\";\n" +
 	"\vDelResponse\x12\x12\n" +
 	"\x04code\x18\x01 \x01(\x03R\x04code\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage2\xc2\x02\n" +
-	"\tGenerator\x12W\n" +
-	"\vGenerateURL\x12\x13.intr.v1.URLRequest\x1a\x14.intr.v1.URLResponse\"\x1d\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/v1/generator/code\x12l\n" +
-	"\x10BatchGenerateURL\x12\x18.intr.v1.BatchURLRequest\x1a\x19.intr.v1.BatchURLResponse\"#\x82\xd3\xe4\x93\x02\x1d:\x01*\"\x18/v1/generator/batch/code\x126\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage2\x82\x02\n" +
+	"\tGenerator\x12:\n" +
+	"\vGenerateURL\x12\x13.intr.v1.URLRequest\x1a\x14.intr.v1.URLResponse\"\x00\x12I\n" +
+	"\x10BatchGenerateURL\x12\x18.intr.v1.BatchURLRequest\x1a\x19.intr.v1.BatchURLResponse\"\x00\x126\n" +
 	"\tUpdateURL\x12\x13.intr.v1.URLRequest\x1a\x14.intr.v1.URLResponse\x126\n" +
 	"\tDeleteURL\x12\x13.intr.v1.DelRequest\x1a\x14.intr.v1.DelResponseB\x10Z\x0eintr.v1;intrv1b\x06proto3"
 
