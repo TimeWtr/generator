@@ -297,6 +297,7 @@ type DBHandler struct {
 	BaseHandler
 	// 本地消息表机制
 	lt lmt.MessagePusher
+	d  dao.ShortCodeInter
 	// ID获取的通道
 	idCh <-chan int64
 }
@@ -328,10 +329,10 @@ func (d *DBHandler) Process(ctx context.Context, req *Request, resp *Response) e
 		}
 	}()
 
-	fn := func(ctx context.Context, tx *gorm.DB) (lmt.Messages, error) {
+	fn := func(ctx context.Context, tx *gorm.DB) ([]lmt.Messages, error) {
 		id, er := d.getID(ctx)
 		if er != nil {
-			return lmt.Messages{}, er
+			return nil, er
 		}
 
 		now := time.Now().UnixMilli()
@@ -350,25 +351,27 @@ func (d *DBHandler) Process(ctx context.Context, req *Request, resp *Response) e
 				UpdateTime:  now,
 			}).Error
 		if err != nil {
-			return lmt.Messages{}, err
+			return nil, err
 		}
 
 		id, er = d.getID(ctx)
 		if er != nil {
-			return lmt.Messages{}, er
+			return nil, er
 		}
 
 		var builder strings.Builder
 		builder.WriteString("gen-")
 		builder.WriteString(strconv.Itoa(int(id)))
 
-		return lmt.Messages{
-			ID:        id,
-			Biz:       req.Biz,
-			MessageID: builder.String(),
-			Topic:     generator.Topic,
-			Content:   builder.String(),
-			Status:    lmt.MessageStatusNotSend.Int(),
+		return []lmt.Messages{
+			{
+				ID:        id,
+				Biz:       req.Biz,
+				MessageID: builder.String(),
+				Topic:     generator.Topic,
+				Content:   builder.String(),
+				Status:    lmt.MessageStatusNotSend.Int(),
+			},
 		}, nil
 	}
 

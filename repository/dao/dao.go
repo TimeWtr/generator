@@ -15,11 +15,11 @@
 package dao
 
 import (
+	"gorm.io/gorm"
 	"time"
 
 	"github.com/TimeWtr/shortlink-platform/generator/domain"
 	"golang.org/x/net/context"
-	"gorm.io/gorm"
 )
 
 type ShortCodeInter interface {
